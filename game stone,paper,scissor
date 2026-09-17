@@ -1,0 +1,25 @@
+import random
+cscore=0
+hscore=0
+while True:
+    print(f"Computer score: {cscore} | Human score: {hscore}")
+    user=int(input("1 for stone,2 for paper,3 for scissor: "))
+    com=random.randint(1, 3)
+    if user==1 and com==3:
+        print("You win!")
+        hscore+=1
+    elif user==2 and com==1:
+        print("You win!")
+        hscore+=1
+    elif user==3 and com==2:
+        print("You win!")
+        hscore+=1
+    elif user==com:
+        print("Draw!")
+        hscore+=0
+    else:
+        print("Computer wins!")
+        cscore+=1
+        if cscore==5:
+            print("Computer wins the game!")
+            break

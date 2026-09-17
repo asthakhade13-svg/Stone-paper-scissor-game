@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stone Paper Scissor</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background: #1e1e2f;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .card {
+      background: #27293d;
+      border-radius: 16px;
+      padding: 30px 25px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: #f5f6fa;
+    }
+    .scoreboard {
+      display: flex;
+      justify-content: space-between;
+      background: #1e1e2f;
+      padding: 12px 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .score-human { color: #00cec9; }
+    .score-com { color: #ff7675; }
+    .status-box {
+      background: #1e1e2f;
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 24px;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .choices {
+      font-size: 0.95rem;
+      color: #dfe6e9;
+      margin-bottom: 10px;
+    }
+    .result {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #fdcb6e;
+    }
+    .btn-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .choice-btn {
+      border: none;
+      outline: none;
+      padding: 15px 10px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    .choice-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      filter: brightness(1.1);
+    }
+    .choice-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+    .choice-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-stone { background: #6c5ce7; }
+    .btn-paper { background: #0984e3; }
+    .btn-scissor { background: #e17055; }
+    .btn-reset {
+      background: #636e72;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-reset:hover {
+      background: #b2bec3;
+      color: #2d3436;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Stone • Paper • Scissor</h1>
+
+    <div class="scoreboard">
+      <div class="score-human" id="human-score">👤 You: 0</div>
+      <div class="score-com" id="comp-score">🤖 Computer: 0</div>
+    </div>
+
+    <div class="status-box">
+      <div class="choices" id="choices-info">Click an option below to play</div>
+      <div class="result" id="result-msg">Ready to start!</div>
+    </div>
+
+    <div class="btn-grid">
+      <button class="choice-btn btn-stone" onclick="playRound(1)">🪨 Stone</button>
+      <button class="choice-btn btn-paper" onclick="playRound(2)">📄 Paper</button>
+      <button class="choice-btn btn-scissor" onclick="playRound(3)">✂️ Scissor</button>
+    </div>
+
+    <button class="btn-reset" onclick="resetGame()">🔄 Restart Game</button>
+  </div>
+
+  <script>
+    let hscore = 0;
+    let cscore = 0;
+    const names = { 1: "Stone 🪨", 2: "Paper 📄", 3: "Scissor ✂️" };
+
+    function playRound(user) {
+      const com = Math.floor(Math.random() * 3) + 1;
+      const choicesInfo = document.getElementById("choices-info");
+      const resultMsg = document.getElementById("result-msg");
+
+      choicesInfo.innerText = `You: ${names[user]} | Computer: ${names[com]}`;
+
+      if ((user === 1 && com === 3) || (user === 2 && com === 1) || (user === 3 && com === 2)) {
+        resultMsg.innerText = "🎉 You win!";
+        resultMsg.style.color = "#00cec9";
+        hscore++;
+      } else if (user === com) {
+        resultMsg.innerText = "🤝 Draw!";
+        resultMsg.style.color = "#fdcb6e";
+      } else {
+        resultMsg.innerText = "💥 Computer wins!";
+        resultMsg.style.color = "#ff7675";
+        cscore++;
+      }
+
+      document.getElementById("human-score").innerText = `👤 You: ${hscore}`;
+      document.getElementById("comp-score").innerText = `🤖 Computer: ${cscore}`;
+
+      if (cscore === 5) {
+        resultMsg.innerText = "🚨 Computer wins the game!";
+        disableButtons(true);
+      } else if (hscore === 5) {
+        resultMsg.innerText = "🏆 You win the game!";
+        disableButtons(true);
+      }
+    }
+
+    function disableButtons(disabled) {
+      document.querySelectorAll(".choice-btn").forEach(btn => btn.disabled = disabled);
+    }
+
+    function resetGame() {
+      hscore = 0;
+      cscore = 0;
+      document.getElementById("human-score").innerText = "👤 You: 0";
+      document.getElementById("comp-score").innerText = "🤖 Computer: 0";
+      document.getElementById("choices-info").innerText = "Click an option below to play";
+      const resultMsg = document.getElementById("result-msg");
+      resultMsg.innerText = "Ready to start!";
+      resultMsg.style.color = "#fdcb6e";
+      disableButtons(false);
+    }
+  </script>
+</body>
+</html>
